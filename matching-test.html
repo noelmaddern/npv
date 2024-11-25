@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Matching Activity</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin: 20px;
+    }
+
+    .list {
+      width: 45%;
+    }
+
+    .list h3 {
+      text-align: center;
+    }
+
+    .draggable {
+      padding: 10px;
+      margin: 10px 0;
+      background-color: #f0f0f0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      cursor: grab;
+    }
+
+    .droppable {
+      padding: 10px;
+      margin: 10px 0;
+      background-color: #e8f4fc;
+      border: 2px dashed #007bff;
+      border-radius: 4px;
+      min-height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .droppable.correct {
+      background-color: #d4edda;
+      border-color: #28a745;
+    }
+
+    .droppable.wrong {
+      background-color: #f8d7da;
+      border-color: #dc3545;
+    }
+
+    .button-container {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Matching Activity</h1>
+  <div class="container">
+    <div class="list">
+      <h3>Items</h3>
+      <div class="draggable" draggable="true" id="item1">Apple</div>
+      <div class="draggable" draggable="true" id="item2">Dog</div>
+      <div class="draggable" draggable="true" id="item3">Car</div>
+    </div>
+    <div class="list">
+      <h3>Matches</h3>
+      <div class="droppable" data-match="item1">Fruit</div>
+      <div class="droppable" data-match="item2">Animal</div>
+      <div class="droppable" data-match="item3">Vehicle</div>
+    </div>
+  </div>
+  <div class="button-container">
+    <button onclick="checkAnswers()">Check Answers</button>
+  </div>
+  <script>
+    const draggables = document.querySelectorAll('.draggable');
+    const droppables = document.querySelectorAll('.droppable');
+
+    draggables.forEach(draggable => {
+      draggable.addEventListener('dragstart', (e) => {
+        e.dataTransfer.setData('text/plain', e.target.id);
+      });
+    });
+
+    droppables.forEach(droppable => {
+      droppable.addEventListener('dragover', (e) => {
+        e.preventDefault();
+      });
+
+      droppable.addEventListener('drop', (e) => {
+        e.preventDefault();
+        const draggedId = e.dataTransfer.getData('text/plain');
+        const draggedElement = document.getElementById(draggedId);
+
+        if (droppable.children.length === 0) {
+          droppable.appendChild(draggedElement);
+        }
+      });
+    });
+
+    function checkAnswers() {
+      droppables.forEach(droppable => {
+        const matchId = droppable.getAttribute('data-match');
+        const child = droppable.firstChild;
+
+        if (child && child.id === matchId) {
+          droppable.classList.add('correct');
+          droppable.classList.remove('wrong');
+        } else {
+          droppable.classList.add('wrong');
+          droppable.classList.remove('correct');
+        }
+      });
+    }
+  </script>
+</body>
+</html>
